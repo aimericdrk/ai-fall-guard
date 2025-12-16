@@ -1,0 +1,8 @@
+{
+  "short_name": "fall Detection",
+  "name": "fall Detection Web Application",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: fall-detection-mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: fall-detection
+    volumes:
+      - mongodb_data:/data/db
+
+  backend:
+    build: ./fall-detection-backend
+    container_name: fall-detection-backend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/fall-detection?authSource=admin
+      JWT_SECRET: your-super-secret-jwt-key
+      ML_SERVICE_URL: http://ml-service:8001
+    depends_on:
+      - mongodb
+    volumes:
+      - ./uploads:/app/uploads
+
+  ml-service:
+    build: ./fall-detection-ml
+    container_name: fall-detection-ml
+    restart: always
+    ports:
+      - "8001:8001"
+    environment:
+      ML_SERVICE_HOST: 0.0.0.0
+      ML_SERVICE_PORT: 8001
+      BACKEND_URL: http://backend:3000
+    volumes:
+      - ./uploads:/app/uploads
+
+volumes:
+  mongodb_data:
