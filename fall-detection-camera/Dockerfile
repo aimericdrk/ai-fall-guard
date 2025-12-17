@@ -1,27 +1,34 @@
 FROM python:3.9-slim
 
-WORKDIR /app
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
+# Install minimal dependencies (no GUI)
+RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1 \
-    libglx-mesa0 \
     libglib2.0-0 \
     libsm6 \
     libxext6 \
     libxrender-dev \
     libgomp1 \
-    wget \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Copy requirements
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+WORKDIR /app
 
-# Copy application
-COPY . .
+# Install headless OpenCV first
+RUN pip install opencv-python-headless==4.8.1.78
 
-CMD ["ls"]
+COPY requirements-headless.txt .
+RUN pip install --no-cache-dir -r requirements-headless.txt
 
-# Run the application
-CMD ["python", "run-camera-app.py"]
+COPY run-camera-headless.py .
+
+# Create user
+RUN useradd -m -u 1000 appuser
+USER appuser
+
+# Environment variables for headless operation
+ENV PYTHONUNBUFFERED=1
+ENV QT_QPA_PLATFORM=offscreen
+ENV OPENCV_LOG_LEVEL=ERROR
+ENV DISPLAY=:99
+
+CMD ["python", "run-camera-headless.py"]
