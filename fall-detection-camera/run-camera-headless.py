@@ -20,7 +20,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 class HeadlessFallDetection:
-    def __init__(self, server_url="http://localhost:8001", user_id="default"):
+    def __init__(self, server_url="http://localhost:3000", user_id="default"):
         # Use Docker service name instead of localhost
         self.server_url = server_url  # Changed from localhost to service name
         self.user_id = user_id
@@ -322,8 +322,8 @@ class HeadlessFallDetection:
 
 def main():
     parser = argparse.ArgumentParser(description='Fixed Headless Fall Detection Camera App')
-    parser.add_argument('--server-url', default='http://localhost:8001', 
-                       help='ML server URL (default: http://localhost:8001)')
+    parser.add_argument('--server-url', default='http://localhost:3000', 
+                       help='ML server URL (default: http://localhost:3000)')
     parser.add_argument('--user-id', default='default', 
                        help='User ID (default: default)')
     parser.add_argument('--verbose', action='store_true', 

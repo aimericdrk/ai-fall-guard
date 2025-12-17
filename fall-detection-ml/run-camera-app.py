@@ -24,7 +24,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class RealTimeFallDetection:
-    def __init__(self, server_url="http://localhost:8001", user_id="default"):
+    def __init__(self, server_url="http://localhost:3000", user_id="default"):
         self.server_url = server_url
         self.user_id = user_id
         self.ws_url = server_url.replace("http://", "ws://").replace("https://", "wss://")
